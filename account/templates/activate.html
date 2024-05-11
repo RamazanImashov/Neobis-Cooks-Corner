@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Активация Аккаунта Neobis Cooks Corner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .text-center {
+            text-align: center;
+            font-size: 24px;
+            color: #000;
+            animation: bounceIn 1s ease forwards;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .project-name {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .project-title {
+            text-align: center;
+            font-size: 18px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.1);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-body">
+            <p class="project-title">Neobis Cooks Corner Project</p>
+            <p class="text-center" style="font-size: 28px;">Активация прошла успешно</p>
+            <p class="project-name">Можете переходить в приложение</p>
+        </div>
+    </div>
+</body>
+</html>

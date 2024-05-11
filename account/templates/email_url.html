@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <style>
+        p {text-align: center;}
+        div {text-align: center;}
+        .card {width: 300px; padding: 20px;}
+        .card-text {font-size: 18px; }
+</style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text">
+                <strong>{{ text_detail }}</strong>
+            </p>
+             <p class="text-center">
+                 <strong>
+                     Username - {{ username }}
+                 </strong>
+             </p>
+             <p class="text-center">
+                 <strong>
+                     Email - {{ email }}
+                 </strong>
+            </p>
+            <p class="text-center">
+                Activation Code - {{ activation_code }}
+            </p>
+            <form method="post">
+                <a class="verify-button" href="{{ domain }}{% url 'activate' email activation_code %}">
+                    <button type="button" class="btn">
+                        Verify account
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

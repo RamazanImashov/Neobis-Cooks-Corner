@@ -1,0 +1,65 @@
+version: "3"
+services:
+    django:
+      build: .
+      container_name: CooksCorner
+      env_file:
+        - .env
+      ports:
+        - "8003:8000"
+      volumes:
+        - .:/app
+        - static_volume:/usr/src/app/back-static
+        - media_volume:/usr/src/app/back-media
+        - ./db.sqlite3:/usr/src/app/db.sqlite3
+      restart: always
+      command: sh -c "python manage.py makemigrations && python manage.py collectstatic --noinput  && python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+        - cooks-postgres
+
+    cooks-postgres:
+      image: postgres:14
+      container_name: cooks-postgres
+      restart: always
+      environment:
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASS}
+      ports:
+        - "5437:5432"
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+    nginx:
+      image: nginx
+      ports:
+        - 82:80
+        # - 443:443
+      volumes:
+        - ./nginx/no_ssl/nginx.conf:/etc/nginx/conf.d/default.conf
+        - static_volume:/usr/src/app/back-static
+        - media_volume:/usr/src/app/back-media
+        - /etc/letsencrypt:/etc/letsencrypt
+      depends_on:
+        - django
+
+    cooks-redis:
+      image: redis
+      ports:
+        - "6379:6379"
+
+    cooks-celery:
+      build: .
+      container_name: cooks-celery
+      volumes:
+        - .:/usr/src/app
+      restart: always
+      command: celery -A config worker -l info
+      depends_on:
+        - django
+        - cooks-redis
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
