@@ -15,7 +15,7 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    # path('users/', UsersView.as_view({'get': 'list'})),
+    # path('accounts/', UsersView.as_view({'get': 'list'})),
     path("register/", RegisterView.as_view()),
     path(
         "activate/<str:email>/<str:activation_code>/",

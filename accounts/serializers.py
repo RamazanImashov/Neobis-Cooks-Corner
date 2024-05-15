@@ -13,6 +13,17 @@ from .validators import (
 User = get_user_model()
 
 
+class UsersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'is_superuser', 'is_staff', 'is_active',]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        return rep
+
+
 class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(min_length=6, required=True)
 
@@ -40,11 +51,11 @@ class ActivationSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True)
+    email = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
 
-    def validate_email(self, username):
-        return LoginValidator.validate_email(username=username)
+    def validate_email(self, email):
+        return LoginValidator.validate_email(email=email)
 
     def validate(self, attrs):
         return LoginValidator.validate(self=self, attrs=attrs)

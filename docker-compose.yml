@@ -14,6 +14,7 @@ services:
         - ./db.sqlite3:/usr/src/app/db.sqlite3
       restart: always
       command: sh -c "python manage.py makemigrations && python manage.py collectstatic --noinput  && python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+      depends_on:
         - cooks-postgres
 
     cooks-postgres:
@@ -31,6 +32,7 @@ services:
 
     nginx:
       image: nginx
+      container_name: cooks-nginx
       ports:
         - 82:80
         # - 443:443
@@ -42,12 +44,13 @@ services:
       depends_on:
         - django
 
-    cooks-redis:
+    redis:
       image: redis
+      container_name: cooks-redis
       ports:
         - "6379:6379"
 
-    cooks-celery:
+    celery:
       build: .
       container_name: cooks-celery
       volumes:
@@ -56,7 +59,7 @@ services:
       command: celery -A config worker -l info
       depends_on:
         - django
-        - cooks-redis
+        - redis
 
 
 volumes:
