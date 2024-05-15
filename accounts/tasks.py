@@ -15,7 +15,7 @@ def send_activation_code(username, email, activation_code):
     message_html = render_to_string("email_url.html", context)
     message = strip_tags(message_html)
     send_mail(
-        "Activation account",
+        "Activation accounts",
         message,
         "admin@gmail.com",
         [email],

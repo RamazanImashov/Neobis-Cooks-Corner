@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth import get_user_model
-from .serializers import LoginSerializer, ForgotPasswordSerializer
+from .serializers import LoginSerializer, ForgotPasswordSerializer, UsersSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .permissions import IsUserAuth
@@ -20,6 +21,11 @@ from .services import (
 # Create your views here.
 
 User = get_user_model()
+
+
+class UsersView(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UsersSerializer
 
 
 class RegisterView(APIView):

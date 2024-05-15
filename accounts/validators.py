@@ -46,22 +46,22 @@ class ActivationValidator:
 
 class LoginValidator:
     @staticmethod
-    def validate_email(username):
-        if not User.objects.filter(username=username).exists():
+    def validate_email(email):
+        if not User.objects.filter(email=email).exists():
             raise ValidationError("User not found")
-        return username
+        return email
 
     @staticmethod
     def validate(self, attrs):
         request = self.context.get("request")
-        username = attrs.get("username")
+        email = attrs.get("email")
         password = attrs.get("password")
 
-        if username and password:
-            user = authenticate(username=username, password=password, request=request)
+        if email and password:
+            user = authenticate(username=email, password=password, request=request)
 
             if not user:
-                raise ValidationError("Error username or password")
+                raise ValidationError("Error email or password")
 
         else:
             raise ValidationError("Username and password obazatelno")

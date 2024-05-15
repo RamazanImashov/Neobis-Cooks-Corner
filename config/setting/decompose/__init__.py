@@ -1,5 +1,4 @@
 __all__ = (
-    "ADMIN_APPS",
     "BASE_APPS",
     "LIBS_APPS",
     "APPS",
@@ -11,14 +10,16 @@ __all__ = (
     "JWT_BS",
     "SP_BS",
     "LOG_BS",
-    "CLOUD_STORAGE_SETTING"
+    "CLOUD_STORAGE_SETTING",
+    "JAZZMIN_UI_TWEAKS",
 )
 
-from config.setting.decompose.installed_apps_setting import ADMIN_APPS, BASE_APPS, LIBS_APPS, APPS
+from config.setting.decompose.installed_apps_setting import BASE_APPS, LIBS_APPS, APPS
 from config.setting.decompose.middleware_setting import BASE_MIDDLEWARE as BM
 from config.setting.decompose.templates_setting import BASE_SETTING as TS
 from config.setting.decompose.auth_password_validators_setting import BASE_SETTING as APVS
 from config.setting.decompose.jazzmin_setting import BASE_SETTINGS as JBS
+from config.setting.decompose.jazzmin_setting import JAZZMIN_UI_TWEAKS as JAZZMIN_UI_TWEAKS
 from config.setting.decompose.rest_framework_setting import BASE_SETTING as RF_BS
 from config.setting.decompose.jwt_setting import BASE_SETTING as JWT_BS
 from config.setting.decompose.spectacular import BASE_SETTINGS as SP_BS

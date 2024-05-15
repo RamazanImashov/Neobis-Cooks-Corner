@@ -25,7 +25,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "back-static")
 MEDIA_URL = '/back-media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "back-media")
 
-CSRF_TRUSTED_ORIGINS = ['http://164.92.173.248:80', 'http://164.92.173.248']
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:82", "http://127.0.0.1:80", "http://127.0.0.1"]
 
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']

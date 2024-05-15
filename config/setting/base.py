@@ -7,9 +7,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DEBUG = config("DEBUG", default=False)
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
-INSTALLED_APPS = ADMIN_APPS + BASE_APPS + LIBS_APPS + APPS
+INSTALLED_APPS = BASE_APPS + LIBS_APPS + APPS
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# ]
 
 SITE_ID = 1
 
@@ -50,6 +55,8 @@ CELERY_BROKER_URL = f'redis://{Redis_Host}:6379'
 CELERY_RESULT_BACKEND = f'redis://{Redis_Host}:6379'
 
 JAZZMIN_SETTINGS = JBS
+JAZZMIN_SETTINGS["show_ui_builder"] = True
+JAZZMIN_UI_TWEAKS = JAZZMIN_UI_TWEAKS
 
 REST_FRAMEWORK = RF_BS
 
@@ -57,7 +64,7 @@ SIMPLE_JWT = JWT_BS
 
 SPECTACULAR_SETTINGS = SP_BS
 
-LOGGING = LOG_BS
+# LOGGING = LOG_BS
 
 CLOUDINARY_STORAGE = CLOUD_STORAGE_SETTING
 
