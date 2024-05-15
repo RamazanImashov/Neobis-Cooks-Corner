@@ -17,10 +17,12 @@ from apps.review.serializers import LikeSerializer, FavoritesSerializer, Comment
 from apps.review.models import Like, Favorites, Comment
 from apps.user_profile.models import UserProfile
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 
 
+@extend_schema(tags=['recipe'])
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
 
@@ -99,11 +101,13 @@ class RecipeViewSet(ModelViewSet):
             return Response(message, status=200)
 
 
+@extend_schema(tags=['recipe'])
 class AddRecipeImageViewSet(ListCreateAPIView):
     queryset = AddRecipeImage.objects.all()
     serializer_class = AddRecipeImageSerializer
 
 
+@extend_schema(tags=['recipe'])
 class AddRecipeIngredientViewSet(ListCreateAPIView):
     queryset = AddRecipeIngredient.objects.all()
     serializer_class = AddRecipeIngredientSerializer

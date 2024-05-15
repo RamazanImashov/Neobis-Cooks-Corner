@@ -17,6 +17,7 @@ from .services import (
     ForgotPasswordService,
     ForgotPasswordCompleteService,
 )
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 
@@ -28,6 +29,7 @@ class UsersView(ModelViewSet):
     serializer_class = UsersSerializer
 
 
+@extend_schema(tags=['users'])
 class RegisterView(APIView):
     service = RegisterService()
 
@@ -37,6 +39,7 @@ class RegisterView(APIView):
         return Response("Good, Registration successful", status=status_code)
 
 
+@extend_schema(tags=['users'])
 class ActivationViewCode(APIView):
     service = ActivationService()
 
@@ -45,6 +48,7 @@ class ActivationViewCode(APIView):
         return Response("Активация прошла успешно", status=status_code)
 
 
+@extend_schema(tags=['users'])
 class ActivationViewDjCode(View):
     template_name = "activate.html"
     service = ActivationService()
@@ -54,10 +58,12 @@ class ActivationViewDjCode(View):
         return render(request, self.template_name)
 
 
+@extend_schema(tags=['users'])
 class LoginViewEmail(ObtainAuthToken):
     serializer_class = LoginSerializer
 
 
+@extend_schema(tags=['users'])
 class LogoutView(APIView):
     permission_classes = (IsUserAuth,)
     service = LogoutService()
@@ -67,6 +73,7 @@ class LogoutView(APIView):
         return Response(response, status=status_code)
 
 
+@extend_schema(tags=['users'])
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -75,6 +82,7 @@ class ChangePasswordView(APIView):
         return Response("Пароль успешно обнавлен", status=200)
 
 
+@extend_schema(tags=['users'])
 class ForgotPasswordView(generics.CreateAPIView):
     serializer_class = ForgotPasswordSerializer
     permission_classes = [AllowAny]
@@ -84,6 +92,7 @@ class ForgotPasswordView(generics.CreateAPIView):
         return Response({"Код восстановления отправлен на ваш email."}, status=200)
 
 
+@extend_schema(tags=['users'])
 class ForgotPasswordCompleteView(APIView):
     def post(self, request):
         ForgotPasswordCompleteService.complete_password(request=request)

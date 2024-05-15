@@ -11,10 +11,12 @@ from .permissions import IsAdminPermission, IsAuthorPermission
 from apps.user_profile.models import UserProfile
 from apps.user_profile.serializers import ProfileSerializer, UserSubscriptionSerializer
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
 
+@extend_schema(tags=['profile'])
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = ProfileSerializer
@@ -34,6 +36,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+@extend_schema(tags=['profile'])
 class ToggleSubscriptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -54,6 +57,7 @@ class ToggleSubscriptionAPIView(APIView):
             return Response({"message": "Subscribed successfully."}, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=['profile'])
 class SubscriptionsListView(ListAPIView):
     serializer_class = UserSubscriptionSerializer
     permission_classes = [IsAuthenticated]
@@ -64,6 +68,7 @@ class SubscriptionsListView(ListAPIView):
         return user_profile.subscriptions.all()
 
 
+@extend_schema(tags=['profile'])
 class FollowersListView(ListAPIView):
     serializer_class = UserSubscriptionSerializer
     permission_classes = [IsAuthenticated]

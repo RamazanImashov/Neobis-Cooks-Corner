@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .perimissions import IsAuthor
 from apps.user_profile.models import UserProfile
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 
 # Create your views here.
 
@@ -22,11 +23,13 @@ class PermissionMixin:
         return [permissions() for permissions in permissions]
 
 
+@extend_schema(tags=['review'])
 class CommentView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
 
+@extend_schema(tags=['review'])
 class FavoriteListView(ModelViewSet):
     queryset = Favorites.objects.all()
     serializer_class = FavoritesListSerializer
