@@ -1,12 +1,13 @@
-from .models import Like, Dislike, Comment, Rating
+from .models import Comment, Favorites
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import generics
-from .serializers import *
+from .serializers import CommentSerializer, FavoritesListSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .perimissions import IsAuthor
-
+from apps.user_profile.models import UserProfile
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -21,14 +22,9 @@ class PermissionMixin:
         return [permissions() for permissions in permissions]
 
 
-class CommentView(PermissionMixin, ModelViewSet):
+class CommentView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-
-
-class RatingView(PermissionMixin, ModelViewSet):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
 
 
 class FavoriteListView(ModelViewSet):
@@ -36,7 +32,7 @@ class FavoriteListView(ModelViewSet):
     serializer_class = FavoritesListSerializer
 
     def get_queryset(self):
-        return Favorites.objects.filter(author=self.request.user)
-
-
-
+        user = self.request.user
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        favorite = Favorites.objects.filter(author=user_profile)
+        return favorite

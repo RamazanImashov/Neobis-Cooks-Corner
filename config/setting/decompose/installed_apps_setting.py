@@ -32,5 +32,6 @@ APPS = [
     "accounts",
     "apps.user_profile",
     "apps.recipe",
+    "apps.review",
 ]
 

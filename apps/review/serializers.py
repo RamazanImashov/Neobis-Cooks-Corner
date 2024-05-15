@@ -1,9 +1,11 @@
 from rest_framework.serializers import ModelSerializer, ValidationError, ReadOnlyField
-from .models import Like, Comment, Rating, Dislike, Favorites
+from .models import Like, Comment, Favorites
+from apps.user_profile.models import UserProfile
+from django.shortcuts import get_object_or_404
 
 
 class CommentSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
+    author = ReadOnlyField(source='author.username')
 
     class Meta:
         model = Comment
@@ -11,64 +13,26 @@ class CommentSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('request').user
-        comment = Comment.objects.create(author=user, **validated_data)
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        comment = Comment.objects.create(author=user_profile, **validated_data)
         return comment
 
 
-class RatingSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
+class CommentActionSerializer(ModelSerializer):
+    author = ReadOnlyField(source='author.username')
+    recipe = ReadOnlyField()
 
     class Meta:
-        model = Rating
+        model = Comment
         fields = '__all__'
-
-    def validate_rating(self, rating):
-        if rating in range(1, 6):
-            return rating
-        raise ValidationError(
-            'rating not be more 5'
-        )
-
-    def validate_product(self, product):
-        user = self.context.get('request').user
-        if self.Meta.model.objects.filter(product=product, author=user):
-            raise ValidationError(
-                "You can't be rating"
-            )
-        return product
 
     def create(self, validated_data):
-        user = self.context.get('request').user
-        return self.Meta.model.objects.create(author=user, **validated_data)
-
-
-class RatingActionSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
-    product = ReadOnlyField()
-
-    class Meta:
-        model = Rating
-        fields = '__all__'
-
-    def validate_rating(self, rating):
-        if rating in range(1, 6):
-            return rating
-        raise ValidationError(
-            'rating not be more 5'
-        )
-
-    def validate_product(self, product):
-        user = self.context.get('request').user
-        if self.Meta.model.objects.filter(product=product, author=user):
-            raise ValidationError(
-                "You can't be rating"
-            )
-        return product
+        return Comment.objects.create(**validated_data)
 
 
 class LikeSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
-    product = ReadOnlyField()
+    author = ReadOnlyField(source='author.username')
+    recipe = ReadOnlyField()
 
     class Meta:
         model = Like
@@ -76,25 +40,13 @@ class LikeSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('request').user
-        return self.Meta.model.objects.create(author=user, **validated_data)
-
-
-class DisLikeSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
-    product = ReadOnlyField()
-
-    class Meta:
-        model = Dislike
-        fields = '__all__'
-
-    def create(self, validated_data):
-        user = self.context.get('request').user
-        return self.Meta.model.objects.create(author=user, **validated_data)
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        return self.Meta.model.objects.create(author=user_profile, **validated_data)
 
 
 class FavoritesSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
-    product = ReadOnlyField()
+    author = ReadOnlyField(source='author.username')
+    recipe = ReadOnlyField()
 
     class Meta:
         model = Favorites
@@ -102,20 +54,13 @@ class FavoritesSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('request').user
-        return self.Meta.model.objects.create(author=user, **validated_data)
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        return self.Meta.model.objects.create(author=user_profile, **validated_data)
 
 
 class FavoritesListSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.email')
+    # author = ReadOnlyField(source='author.username')
 
     class Meta:
         model = Favorites
         fields = '__all__'
-
-
-# class FavoritesListSerializer(ModelSerializer):
-#     product = ProductDetailSerializer
-#
-#     class Meta:
-#         model = Favorites
-#         fields = ['product']

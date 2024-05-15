@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer, ReadOnlyField, Validatio
 from apps.recipe.models import Recipe, AddRecipeImage, AddRecipeIngredient
 from django.shortcuts import get_object_or_404
 from apps.user_profile.models import UserProfile
+from apps.review.serializers import CommentSerializer, FavoritesListSerializer
 
 
 class RecipeDetailSerializers(ModelSerializer):
@@ -13,8 +14,11 @@ class RecipeDetailSerializers(ModelSerializer):
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
-        rep['image'] = AddRecipeImageSerializer(instance.recipe_image.all(), many=True).data
+        rep['likes'] = instance.likes.all().count()
+        rep['favorite'] = instance.favorites.all().count()
         rep['ingredient'] = AddRecipeIngredientSerializer(instance.recipe_ingredient.all(), many=True).data
+        rep['image'] = AddRecipeImageSerializer(instance.recipe_image.all(), many=True).data
+        rep['comments'] = CommentSerializer(instance.comments.all(), many=True).data
         return rep
 
     def create(self, validated_data):
@@ -29,6 +33,13 @@ class RecipeListSerializers(ModelSerializer):
     class Meta:
         model = Recipe
         fields = ["slug", "recipe_name", "profile"]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['likes'] = instance.likes.all().count()
+        rep['favorite'] = instance.favorites.all().count()
+        rep['image'] = AddRecipeImageSerializer(instance.recipe_image.all(), many=True).data
+        return rep
 
     # def create(self, validated_data):
     #     user = self.context.get('request').user

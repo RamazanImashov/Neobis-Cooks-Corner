@@ -13,6 +13,8 @@ from apps.recipe.serializers import (
 )
 from .permissions import IsAdminPermission, IsAuthorPermission
 from rest_framework.decorators import action
+from apps.review.serializers import LikeSerializer, FavoritesSerializer, CommentActionSerializer
+from apps.review.models import Like, Favorites, Comment
 from apps.user_profile.models import UserProfile
 from django.shortcuts import get_object_or_404
 
@@ -52,6 +54,49 @@ class RecipeViewSet(ModelViewSet):
         serializer.save(recipe_id=recipe_id)
         message = request.data
         return Response(message, status=200)
+
+    @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    def favorites(self, request, pk=None):
+        recipe = self.get_object()
+        user = request.user
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        serializer = FavoritesSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            favorites = Favorites.objects.get(recipe=recipe, author=user_profile)
+            favorites.delete()
+            message = 'UnFavorites'
+        except Favorites.DoesNotExist:
+            Favorites.objects.create(recipe=recipe, author=user_profile)
+            message = 'Favorites'
+        return Response(message, status=200)
+
+    @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    def like(self, request, pk=None):
+        recipe = self.get_object()
+        user = request.user
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        serializer = LikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            like = Like.objects.get(recipe=recipe, author=user_profile)
+            like.delete()
+            message = 'Unlike'
+        except Like.DoesNotExist:
+            Like.objects.create(recipe=recipe, author=user_profile)
+            message = 'Like'
+        return Response(message, status=200)
+
+    @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
+    def comment(self, request, pk=None):
+        recipe = self.get_object()
+        user = request.user
+        user_profile = get_object_or_404(UserProfile, user_id=user)
+        serializer = CommentActionSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(recipe=recipe, author=user_profile)
+            message = request.data
+            return Response(message, status=200)
 
 
 class AddRecipeImageViewSet(ListCreateAPIView):

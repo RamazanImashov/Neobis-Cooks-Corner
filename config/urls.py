@@ -7,10 +7,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema')),
     path('api/v1/accounts/', include('accounts.urls')),
-    path('api/v1/profiles/', include("apps.user_profile.urls")),
+    path('api/v1/user_profile/', include("apps.user_profile.urls")),
     path("api/v1/recipe/", include("apps.recipe.urls")),
+    path("api/v1/review/", include("apps.review.urls")),
 ]
 
 
