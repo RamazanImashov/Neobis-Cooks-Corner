@@ -58,15 +58,6 @@ JAZZMIN_SETTINGS = JBS
 JAZZMIN_SETTINGS["show_ui_builder"] = True
 JAZZMIN_UI_TWEAKS = JAZZMIN_UI_TWEAKS
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'APP': {
-#             'client_id': '851451809749-9dih1hgmcnk5qesavbc4sh6uto9tme70.apps.googleusercontent.com',
-#             'secret': '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',
-#         }
-#     }
-# }
-
 REST_FRAMEWORK = RF_BS
 
 SIMPLE_JWT = JWT_BS
