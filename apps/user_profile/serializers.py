@@ -11,10 +11,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.ReadOnlyField(source='user.email')
     followers_count = serializers.SerializerMethodField()
     subscriptions_count = serializers.SerializerMethodField()
+    recipe = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        fields = ["user_id", "username", "description",
+                  "profile_image", "followers_count",
+                  "subscriptions_count", 'recipe']
 
     def get_followers_count(self, obj):
         return obj.followers.count()
@@ -22,16 +25,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_subscriptions_count(self, obj):
         return obj.subscriptions.count()
 
+    def get_recipe(self, obj):
+        return RecipeListSerializers(obj.recipe.all(), many=True).data
+
     def validate(self, data):
         current_user = self.context.get("request").user
         if self.instance and self.instance.user != current_user:
             raise serializers.ValidationError("You cannot modify another user's profile")
         return data
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep["recipe"] = RecipeListSerializers(instance.recipe.all(), many=True).data
-        return rep
 
     def create(self, validated_data):
         user = self.context['request'].user

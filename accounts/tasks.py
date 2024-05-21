@@ -9,7 +9,7 @@ def send_activation_code(username, email, activation_code):
         "text_detail": "Thank for registration",
         "username": username,
         "email": email,
-        "domain": "http://34.72.24.139",
+        "domain": "http://127.0.0.1:8003/",
         "activation_code": activation_code,
     }
     message_html = render_to_string("email_url.html", context)
