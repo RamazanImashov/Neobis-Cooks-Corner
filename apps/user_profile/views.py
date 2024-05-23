@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, Http404
 from rest_framework import viewsets, status
 from rest_framework.generics import ListAPIView
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from django.db.models import Count, Subquery, OuterRef
@@ -31,6 +33,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
         "recipe__comments", "recipe__likes", "recipe__favorites"
     )
     serializer_class = ProfileSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ["username"]
 
     def get(self, request, user_id, *args, **kwargs):
         user = User.objects.get(id=user_id)

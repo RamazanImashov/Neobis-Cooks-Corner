@@ -2,6 +2,8 @@ from django.db.models import Count, Prefetch
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.views import Response
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from apps.recipe.models import Recipe, AddRecipeImage, AddRecipeIngredient
 from apps.recipe.serializers import (
@@ -35,6 +37,9 @@ class RecipeViewSet(ModelViewSet):
     ).prefetch_related(
         "recipe_image", "recipe_ingredient", "comments", "likes", "favorites", "profile"
     )
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['difficulty', 'category']
+    search_fields = ["recipe_name", "slug"]
 
     def get_serializer_class(self):
         if self.action == 'list':
