@@ -11,6 +11,7 @@ BASE_APPS = [
 ]
 
 LIBS_APPS = [
+    "debug_toolbar",
     'drf_spectacular',
     "rest_framework",
     "corsheaders",
@@ -19,13 +20,6 @@ LIBS_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     "cloudinary",
     "cloudinary_storage",
-    # 'dj_rest_auth',
-    # 'oauth2_provider',
-    # 'allauth',
-    # 'allauth.account',
-    # 'dj_rest_auth.registration',
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.google',
 ]
 
 APPS = [

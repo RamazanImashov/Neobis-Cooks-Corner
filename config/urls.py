@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/v1/user_profile/', include("apps.user_profile.urls")),
     path("api/v1/recipe/", include("apps.recipe.urls")),
     path("api/v1/review/", include("apps.review.urls")),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 

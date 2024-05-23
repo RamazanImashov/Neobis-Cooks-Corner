@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, ReadOnlyField, ValidationError, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, ReadOnlyField, IntegerField, SerializerMethodField
 from apps.recipe.models import Recipe, AddRecipeImage, AddRecipeIngredient
 from django.shortcuts import get_object_or_404
 from apps.user_profile.models import UserProfile
@@ -7,24 +7,19 @@ from apps.review.serializers import CommentSerializer, FavoritesListSerializer
 
 class RecipeDetailSerializers(ModelSerializer):
     profile = ReadOnlyField(source="profile.username")
-    count_like = SerializerMethodField('get_count_like')
-    count_favorite = SerializerMethodField("get_favorite")
+    count_like = IntegerField(read_only=True)
+    count_favorite = IntegerField(read_only=True)
     ingredient = SerializerMethodField("get_ingredient")
     images = SerializerMethodField("get_image")
-
+    comments = SerializerMethodField("get_comments")
 
     class Meta:
         model = Recipe
         fields = ["slug", "recipe_name", "profile",
                   "count_like", "count_favorite",
                   "description", "difficulty",
-                  "category", 'preparation_time', "ingredient", "images"]
-
-    def get_count_like(self, obj):
-        return obj.likes.count()
-
-    def get_favorite(self, obj):
-        return obj.favorites.count()
+                  "category", 'preparation_time',
+                  "ingredient", "images", "comments"]
 
     def get_image(self, obj):
         return AddRecipeImageSerializer(obj.recipe_image.all(), many=True).data
@@ -42,6 +37,7 @@ class RecipeDetailSerializers(ModelSerializer):
 
 
 class RecipeListSerializers(ModelSerializer):
+    profile = ReadOnlyField(source="profile.username")
     images = SerializerMethodField("get_image")
     count_like = SerializerMethodField('get_count_like')
     count_favorite = SerializerMethodField("get_count_favorite")

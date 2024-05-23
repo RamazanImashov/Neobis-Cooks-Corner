@@ -15,7 +15,7 @@ def get_file_path(instance, filename):
 
 
 class UserProfile(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="id аккаунта")
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="id аккаунта", related_name="user")
     username = models.CharField(max_length=50, verbose_name="Имя пользователя")
     description = models.TextField(verbose_name="Опимание профиля", blank=True, null=True)
     profile_image = models.ImageField(upload_to=get_file_path, blank=True, null=True)

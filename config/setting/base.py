@@ -69,3 +69,20 @@ SPECTACULAR_SETTINGS = SP_BS
 CLOUDINARY_STORAGE = CLOUD_STORAGE_SETTING
 
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "192.168.31.160",
+    "192.168.31.160:8000"
+]
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

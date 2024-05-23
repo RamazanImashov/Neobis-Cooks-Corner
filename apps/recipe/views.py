@@ -1,3 +1,4 @@
+from django.db.models import Count, Prefetch
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.views import Response
@@ -14,31 +15,63 @@ from apps.recipe.serializers import (
 from .permissions import IsAdminPermission, IsAuthorPermission
 from rest_framework.decorators import action
 from apps.review.serializers import LikeSerializer, FavoritesSerializer, CommentActionSerializer
-from apps.review.models import Like, Favorites, Comment
+from apps.review.models import Like, Favorites
 from apps.user_profile.models import UserProfile
+from apps.recipe.utils import delete_cache
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 # Create your views here.
 
 
 @extend_schema(tags=['recipe'])
 class RecipeViewSet(ModelViewSet):
-    queryset = Recipe.objects.all()
-
-    def get_permissions(self):
-        if self.action == 'create':
-            self.permission_classes = [IsAuthenticated, IsAdminPermission]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAuthorPermission]
-        elif self.action in ['list', 'retrieve']:
-            self.permission_classes = [AllowAny]
-        return super().get_permissions()
+    CACHE_KEY_PREFIX = "recipe-view"
+    queryset = Recipe.objects.annotate(
+        count_like=Count('likes'),
+        count_favorite=Count('favorites')
+    ).prefetch_related(
+        "recipe_image", "recipe_ingredient", "comments", "likes", "favorites", "profile"
+    )
 
     def get_serializer_class(self):
         if self.action == 'list':
             return RecipeListSerializers
         return RecipeDetailSerializers
+
+    @method_decorator(cache_page(60, key_prefix=CACHE_KEY_PREFIX))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60, key_prefix=CACHE_KEY_PREFIX))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        response = super().destroy(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        delete_cache(self.CACHE_KEY_PREFIX)
+        return response
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            self.permission_classes = [AllowAny]
+        elif self.action == 'create':
+            self.permission_classes = [IsAuthenticated, IsAdminPermission]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthorPermission, IsAdminPermission]
+        return super().get_permissions()
 
     @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated])
     def add_image(self, request, pk=None):

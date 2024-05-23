@@ -5,17 +5,17 @@ from django.shortcuts import get_object_or_404
 
 
 class CommentSerializer(ModelSerializer):
-    author = ReadOnlyField(source='author.username')
+    # author = ReadOnlyField(source='author.username')
 
     class Meta:
         model = Comment
         fields = '__all__'
 
-    def create(self, validated_data):
-        user = self.context.get('request').user
-        user_profile = get_object_or_404(UserProfile, user_id=user)
-        comment = Comment.objects.create(author=user_profile, **validated_data)
-        return comment
+    # def create(self, validated_data):
+    #     user = self.context.get('request').user
+    #     user_profile = get_object_or_404(UserProfile, user_id=user)
+    #     comment = Comment.objects.create(author=user_profile, **validated_data)
+    #     return comment
 
 
 class CommentActionSerializer(ModelSerializer):

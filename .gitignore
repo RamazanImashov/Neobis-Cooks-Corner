@@ -25,7 +25,10 @@ __pycache__/
 
 !*media/.gitkeep
 media/*
+!apps/*/migrations/__init__.py
+!accounts/migrations/__init__.py
 apps/*/migrations/*
+accounts/migrations/*
 log/debug.log
 
 build

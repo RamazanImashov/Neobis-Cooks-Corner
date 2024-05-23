@@ -9,21 +9,15 @@ User = get_user_model()
 
 class ProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.ReadOnlyField(source='user.email')
-    followers_count = serializers.SerializerMethodField()
-    subscriptions_count = serializers.SerializerMethodField()
+    followers_count = serializers.IntegerField()
+    subscriptions_count = serializers.IntegerField()
     recipe = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
         fields = ["user_id", "username", "description",
                   "profile_image", "followers_count",
-                  "subscriptions_count", 'recipe']
-
-    def get_followers_count(self, obj):
-        return obj.followers.count()
-
-    def get_subscriptions_count(self, obj):
-        return obj.subscriptions.count()
+                  "subscriptions_count", "recipe"]
 
     def get_recipe(self, obj):
         return RecipeListSerializers(obj.recipe.all(), many=True).data
